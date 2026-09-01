@@ -1,0 +1,425 @@
+<title>Catena Meeting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --bg:#F3F4F7; --surface:#FFFFFF; --surface-2:#EDEFF4; --surface-3:#E4E7EE;
+  --ink:#14171F; --ink-2:#3D4453; --muted:#666E80;
+  --line:#DBDEE6; --line-strong:#C2C7D3;
+  --accent:#27509B; --accent-ink:#1D3E7C; --accent-soft:#E6ECF7;
+  --crit:#A81E2D; --crit-soft:#F8E7E8;
+  --warn:#C08A17; --warn-soft:#FAF0DC;
+  --good:#12805A; --good-soft:#E0F0E9;
+  --shadow:0 1px 2px rgba(20,23,31,.05),0 10px 28px -18px rgba(20,23,31,.30);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111319; --surface:#181B23; --surface-2:#1F232C; --surface-3:#272C37;
+  --ink:#E9EBF1; --ink-2:#C2C7D4; --muted:#8F97A8;
+  --line:#2A2E39; --line-strong:#3A4050;
+  --accent:#93B0E8; --accent-ink:#B5C9F0; --accent-soft:#1C2536;
+  --crit:#CE5C6B; --crit-soft:#2D1C1F;
+  --warn:#BA8A24; --warn-soft:#2A2213;
+  --good:#2F9B72; --good-soft:#132A22;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.85);
+}}
+:root[data-theme="dark"]{
+  --bg:#111319; --surface:#181B23; --surface-2:#1F232C; --surface-3:#272C37;
+  --ink:#E9EBF1; --ink-2:#C2C7D4; --muted:#8F97A8;
+  --line:#2A2E39; --line-strong:#3A4050;
+  --accent:#93B0E8; --accent-ink:#B5C9F0; --accent-soft:#1C2536;
+  --crit:#CE5C6B; --crit-soft:#2D1C1F;
+  --warn:#BA8A24; --warn-soft:#2A2213;
+  --good:#2F9B72; --good-soft:#132A22;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.85);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;padding:0 20px 90px;
+  font-family:"Source Serif 4",Georgia,serif;font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3,.ui,th,button,.chip,.tile-v,.bar-lab,.bar-val,.eyebrow{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+.mono,.tile-v,.bar-val,td.num,.floor-lab{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+header{padding:64px 0 0}
+h1{font-size:clamp(34px,5.4vw,54px);line-height:1.03;letter-spacing:-.028em;font-weight:700;margin:16px 0 0;text-wrap:balance}
+.sub{font-size:19px;color:var(--ink-2);max-width:58ch;margin:18px 0 0}
+.stamp{margin-top:20px;display:inline-flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--muted);
+  font-family:"IBM Plex Mono",monospace;border:1px solid var(--line);background:var(--surface);border-radius:3px;padding:9px 13px}
+hr.rule{height:1px;background:var(--line);border:0;margin:48px 0}
+h2{font-size:clamp(22px,3vw,29px);letter-spacing:-.02em;font-weight:700;margin:0 0 6px;text-wrap:balance}
+h3{font-size:18px;letter-spacing:-.012em;font-weight:600;margin:0 0 6px}
+p{margin:0 0 15px}.lede{color:var(--ink-2);max-width:62ch;margin-bottom:24px}
+.sec-head{display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+/* KPI tiles */
+.tiles{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;box-shadow:var(--shadow)}
+@media(min-width:840px){.tiles{grid-template-columns:repeat(3,1fr)}}
+.tile{background:var(--surface);padding:22px 22px 24px;display:flex;flex-direction:column;gap:9px}
+.tile-k{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.11em;color:var(--accent)}
+.tile-t{font-family:Archivo,sans-serif;font-weight:600;font-size:15.5px;line-height:1.25;letter-spacing:-.01em}
+.tile-v{font-size:38px;font-weight:600;letter-spacing:-.035em;line-height:1;margin:3px 0}
+.tile-v.crit{color:var(--crit)} .tile-v.warn{color:var(--warn)} .tile-v.na{color:var(--muted);font-size:26px}
+.tile-s{font-size:13.5px;color:var(--muted);line-height:1.45}
+.tile-bar{height:5px;background:var(--surface-3);border-radius:99px;overflow:hidden;margin-top:2px}
+.tile-bar i{display:block;height:100%;border-radius:99px;background:var(--crit)}
+/* chart */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);padding:24px 22px 26px}
+.panel-h{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.panel-h h3{margin:0}
+.legend{display:flex;gap:14px;align-items:center;font-size:12px;color:var(--muted);font-family:Archivo,sans-serif}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--accent);margin-right:5px;vertical-align:-1px}
+.legend .dash{display:inline-block;width:16px;border-top:2px dashed var(--ink-2);margin-right:5px;vertical-align:4px}
+.chart{overflow-x:auto}
+.chart-body{--lab:150px;--val:96px;--gp:12px;display:grid;grid-template-columns:var(--lab) minmax(220px,1fr) var(--val);
+  gap:8px var(--gp);align-items:center;position:relative;padding-top:24px;min-width:520px}
+@media(max-width:640px){.chart-body{--lab:108px;--val:84px;grid-template-columns:var(--lab) minmax(150px,1fr) var(--val);min-width:420px}}
+.floor{position:absolute;top:22px;bottom:0;width:0;border-left:2px dashed var(--ink-2);opacity:.7;pointer-events:none;
+  left:calc(var(--lab) + var(--gp) + var(--ratio) * (100% - var(--lab) - var(--val) - var(--gp) * 2))}
+.floor-lab{position:absolute;top:-19px;transform:translateX(-50%);font-size:10.5px;color:var(--ink-2);white-space:nowrap;
+  background:var(--surface);padding:0 5px;letter-spacing:.04em}
+.bar-lab{font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{height:20px;background:var(--surface-2);border-radius:3px;position:relative;cursor:default}
+.track i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--accent);min-width:2px;transition:filter .12s}
+.track.zero i{background:var(--crit)}
+.track:hover i{filter:brightness(1.14)}
+.bar-val{font-size:12.5px;color:var(--ink-2);text-align:right}
+#tip{position:fixed;z-index:60;pointer-events:none;opacity:0;transition:opacity .1s;background:var(--surface);
+  border:1px solid var(--line-strong);border-radius:4px;box-shadow:var(--shadow);padding:10px 12px;font-size:12.5px;
+  font-family:Archivo,sans-serif;color:var(--ink);min-width:170px}
+#tip .t{font-weight:600;margin-bottom:6px}
+#tip dl{margin:0;display:grid;grid-template-columns:auto auto;gap:3px 12px}
+#tip dt{color:var(--muted)} #tip dd{margin:0;text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+/* filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+button.chip{cursor:pointer;font-size:12.5px;font-weight:600;letter-spacing:.02em;padding:7px 13px;border-radius:99px;
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-2);transition:.12s}
+button.chip:hover{border-color:var(--accent);color:var(--accent-ink)}
+button.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+:root[data-theme="dark"] button.chip[aria-pressed="true"]{color:#111319}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.chip[aria-pressed="true"]{color:#111319}}
+/* table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:var(--surface);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14.5px;font-family:Archivo,sans-serif}
+th{text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  padding:12px 14px;border-bottom:1px solid var(--line-strong);background:var(--surface-2);white-space:nowrap}
+th.s{cursor:pointer;user-select:none}
+th.s:hover{color:var(--accent-ink)}
+th.s::after{content:"";opacity:.35;margin-left:5px}
+th.s[data-dir="asc"]::after{content:"\2191";opacity:1}
+th.s[data-dir="desc"]::after{content:"\2193";opacity:1}
+td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:middle;white-space:nowrap}
+td.name{color:var(--ink);font-weight:500}
+td.num{text-align:right;font-size:13.5px}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--surface-2)}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 9px 3px 7px;border-radius:2px;white-space:nowrap}
+.st i{width:7px;height:7px;border-radius:99px;flex:none}
+.st.c{background:var(--crit-soft);color:var(--crit)} .st.c i{background:var(--crit)}
+.st.w{background:var(--warn-soft);color:var(--warn)} .st.w i{background:var(--warn)}
+.st.g{background:var(--good-soft);color:var(--good)} .st.g i{background:var(--good)}
+.st.n{background:var(--surface-3);color:var(--muted)} .st.n i{background:var(--muted)}
+.foot-note{font-size:13px;color:var(--muted);margin-top:12px;max-width:78ch}
+/* prose blocks */
+.note{border-left:2px solid var(--accent);background:var(--accent-soft);padding:17px 19px;border-radius:0 3px 3px 0;
+  font-size:15.5px;line-height:1.56;color:var(--ink-2);max-width:74ch}
+.note strong{color:var(--ink)}
+code{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--surface-2);border:1px solid var(--line);padding:.1em .35em;border-radius:3px;color:var(--ink)}
+.eq{display:flex;flex-wrap:wrap;border:1px solid var(--line-strong);border-radius:4px;background:var(--surface);overflow:hidden;box-shadow:var(--shadow);margin-bottom:30px}
+.eq-t{flex:1 1 190px;padding:20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.eq-o{flex:none;display:flex;align-items:center;padding:0 14px;background:var(--surface-2);border-inline:1px solid var(--line);
+  font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;color:var(--muted)}
+.eq-t .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.12em;color:var(--accent)}
+.eq-t .t{font-family:Archivo,sans-serif;font-weight:600;font-size:16.5px;letter-spacing:-.012em;line-height:1.25}
+.eq-t .s{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted)}
+ol.fixes{list-style:none;padding:0;margin:0;counter-reset:fx}
+ol.fixes li{counter-increment:fx;position:relative;padding:20px 0 20px 50px;border-bottom:1px solid var(--line)}
+ol.fixes li:first-child{border-top:1px solid var(--line)}
+ol.fixes li::before{content:counter(fx,decimal-leading-zero);position:absolute;left:0;top:21px;
+  font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;color:var(--accent)}
+ol.fixes p{font-size:15.5px;color:var(--ink-2);margin:0;max-width:70ch}
+ol.fixes li.blk h3::after{content:"bloccante";font-size:10px;letter-spacing:.11em;text-transform:uppercase;font-weight:600;
+  color:var(--crit);background:var(--crit-soft);padding:3px 7px;border-radius:2px;margin-left:9px;vertical-align:2px}
+.cad{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.cd{background:var(--surface);padding:24px 22px;display:grid;gap:14px}
+@media(min-width:800px){.cd{grid-template-columns:170px minmax(0,1fr);gap:34px}}
+.cd .w{font-family:Archivo,sans-serif;font-weight:600;font-size:16.5px;letter-spacing:-.01em}
+.cd .n{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;color:var(--accent);letter-spacing:.1em}
+.cd .d{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted)}
+.cd p{font-size:15.5px;color:var(--ink-2);margin-bottom:10px}.cd p:last-child{margin-bottom:0}
+.rowspec{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:3px;padding:10px 12px;color:var(--ink);overflow-x:auto;white-space:nowrap;margin-bottom:10px}
+footer{margin-top:52px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.6;max-width:80ch}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Delivery Clientium · cruscotto e proposta</div>
+  <h1>Catena Meeting</h1>
+  <p class="sub">Tre KPI che si moltiplicano fra loro, letti sui numeri veri del portafoglio. Il primo per il secondo fa il terzo, quindi ogni buco sul risultato si scompone in una sola leva.</p>
+  <div class="stamp"><span>DATI 23/08/2026</span><span>FONTE: TAB TRIAGE, KPI DELIVERY OS</span><span>12 CLIENTI SU 18 TRACCIATI</span></div>
+</header>
+
+<hr class="rule">
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Stato del portafoglio</div><h2>I tre numeri, adesso</h2></div>
+  <div class="tiles">
+    <div class="tile">
+      <div class="tile-k">KPI 01</div>
+      <div class="tile-t">Clienti sopra il floor di volume</div>
+      <div class="tile-v crit">1<span style="font-size:20px;color:var(--muted)"> / 12</span></div>
+      <div class="tile-bar"><i style="width:8.3%"></i></div>
+      <div class="tile-s">Solo XIBER supera 6.000 invii in 30 giorni. Media del gruppo 4.397, cioe' il 27% sotto il floor.</div>
+    </div>
+    <div class="tile">
+      <div class="tile-k">KPI 02</div>
+      <div class="tile-t">Meeting per 100 lead contattati</div>
+      <div class="tile-v na">non misurabile</div>
+      <div class="tile-s">Il conteggio passa da <code>positive_reply_count</code>, che esclude le categorie custom. I meeting veri finiscono in "categoria sconosciuta". Fix 01.</div>
+    </div>
+    <div class="tile">
+      <div class="tile-k">KPI 03</div>
+      <div class="tile-t">Clienti a target di meeting</div>
+      <div class="tile-v crit">0<span style="font-size:20px;color:var(--muted)"> / 12</span></div>
+      <div class="tile-bar"><i style="width:2%"></i></div>
+      <div class="tile-s">1 meeting ad agosto (MTD) su tutto il gruppo, 13 a luglio. Target dichiarato: 10 per cliente al mese.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sec-head"><div class="eyebrow">KPI 01 nel dettaglio</div><h2>Volume contro il floor</h2>
+    <p class="lede">Il floor di 6.000 invii al mese per cliente e' la soglia che il triage usa da luglio: sotto quel numero, un reply rate dell'1% non basta a produrre il flusso di meeting che il cliente ha comprato.</p></div>
+  <div class="panel">
+    <div class="panel-h">
+      <h3>Email inviate, ultimi 30 giorni</h3>
+      <div class="legend"><span><i></i>invii</span><span><span class="dash"></span>floor 6.000</span></div>
+    </div>
+    <div class="chart"><div class="chart-body" id="chart"></div></div>
+    <p class="foot-note" id="chartnote"></p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Il book, cliente per cliente</div><h2>Dove si rompe la catena</h2>
+    <p class="lede">La colonna "leva rotta" applica la tabella di decodifica: dice quale dei tre KPI ha ceduto per primo, e quindi chi deve agire. Il reply rate resta come diagnostica, non come misura di resa.</p></div>
+  <div class="filters" id="filters">
+    <button class="chip" data-f="all" aria-pressed="true">Tutti i tracciati</button>
+    <button class="chip" data-f="under" aria-pressed="false">Sotto il floor</button>
+    <button class="chip" data-f="stop" aria-pressed="false">Fermi</button>
+    <button class="chip" data-f="ok" aria-pressed="false">Sopra il floor</button>
+    <button class="chip" data-f="untracked" aria-pressed="false">Non tracciati</button>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr>
+      <th class="s" data-k="n">Cliente</th>
+      <th class="s" data-k="invii">Invii 30gg</th>
+      <th class="s" data-k="pct">% del floor</th>
+      <th class="s" data-k="rep">Risposte</th>
+      <th class="s" data-k="reply">Reply rate</th>
+      <th class="s" data-k="ord">Stato</th>
+      <th>Leva rotta</th>
+      <th>Owner</th>
+    </tr></thead>
+    <tbody id="tbody"></tbody>
+  </table></div>
+  <p class="foot-note" id="tnote"></p>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sec-head"><div class="eyebrow">La proposta</div><h2>Perche' proprio questi tre</h2>
+    <p class="lede">Non tre numeri scelti perche' importanti. Tre numeri scelti perche' il primo per il secondo fa il terzo, e ogni combinazione ha un proprietario diverso.</p></div>
+  <div class="eq">
+    <div class="eq-t"><div class="k">KPI 01</div><div class="t">Lead contattati</div><div class="s">30 giorni · soglia 1.500</div></div>
+    <div class="eq-o" aria-hidden="true">&times;</div>
+    <div class="eq-t"><div class="k">KPI 02</div><div class="t">Tasso di meeting</div><div class="s">meeting / 100 lead</div></div>
+    <div class="eq-o" aria-hidden="true">=</div>
+    <div class="eq-t"><div class="k">KPI 03</div><div class="t">Meeting consegnati</div><div class="s">mese · target 10</div></div>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Se KPI 03 e' sotto target e...</th><th>La causa e'</th><th>Owner</th><th>Prima azione</th></tr></thead>
+    <tbody>
+      <tr><td class="name">KPI 01 sotto soglia</td><td style="white-space:normal">Volume: caselle, campagne ferme, warmup</td><td><span class="st w"><i></i>Campaign Ops</span></td><td style="white-space:normal">Riempire il floor prima di toccare il copy. A volume basso i test non producono dati leggibili.</td></tr>
+      <tr><td class="name">KPI 01 ok, KPI 02 sotto</td><td style="white-space:normal">Angolo: lista, copy o timing</td><td><span class="st w"><i></i>Campaign Manager</span></td><td style="white-space:normal"><code>/campaign-qa</code>, poi <code>/clientium-lezioni</code> per portare la lezione nel brief dopo.</td></tr>
+      <tr><td class="name">KPI 01 ok, KPI 02 ok</td><td style="white-space:normal">Inbox: i positivi non diventano appuntamenti</td><td><span class="st c"><i></i>Inbox Manager</span></td><td style="white-space:normal"><code>/clientium-inbox-run</code> sui thread aperti e sui positivi mai chiusi.</td></tr>
+      <tr><td class="name">KPI 03 sopra target</td><td style="white-space:normal">Nessuna, il cliente e' verde</td><td><span class="st g"><i></i>Account Manager</span></td><td style="white-space:normal">Candidato a referral o upsell. Non si nomina in riunione.</td></tr>
+    </tbody>
+  </table></div>
+  <div style="height:24px"></div>
+  <div class="note"><strong>Il controllo aritmetico che cambia la conversazione.</strong> 1.500 lead al mese all'1,2% fanno 18 meeting. Il target di 10 non richiede un tasso di conversione migliore di quello gia' misurato su Centro Paghe C7: al floor pieno basterebbe lo 0,67%. Se l'aritmetica regge, il problema del portafoglio e' il volume e la misura, non il copy. Se non regge, si scopre esattamente su KPI 02, che e' il punto.</div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Il rituale</div><h2>Tre cadenze, un solo posto dove si legge</h2>
+    <p class="lede">La regola che tiene in piedi tutto: il lavoro umano scende quando il cliente e' a posto, non sale.</p></div>
+  <div class="cad">
+    <div class="cd"><div><div class="n">01</div><div class="w">Ogni giorno</div><div class="d">07:30 · automatico</div></div>
+      <div><p><code>triage_delivery.py</code> gira gia' ogni mattina e riscrive il tab TRIAGE. Non cambia il calcolo, cambia l'uscita: un alert parte solo quando un cliente attraversa una soglia, cioe' scende sotto il floor, entra in FERMO o segna il secondo rosso consecutivo.</p><p>Nessun alert significa nessuna mail. Il tab resta consultabile, ma leggerlo non e' il compito di nessuno.</p></div></div>
+    <div class="cd"><div><div class="n">02</div><div class="w">Ogni lunedi'</div><div class="d">15 min · solo eccezioni</div></div>
+      <div><p>La riunione parte dalla lista dei clienti fuori soglia, non dal roster. Una riga per cliente fuori soglia, mai piu' di una pagina.</p>
+      <div class="rowspec">Cliente │ KPI 01 │ KPI 02 │ KPI 03 │ Leva rotta │ Azione │ Owner │ Entro</div>
+      <p>Chi e' verde non si nomina. Ogni riga esce con un proprietario e una data. Un cliente rosso per due settimane di fila sale all'Head of Delivery ed e' il primo punto della settimana dopo.</p></div></div>
+    <div class="cd"><div><div class="n">03</div><div class="w">Fine mese</div><div class="d">rollup · 3 numeri</div></div>
+      <div><p>Tre numeri di portafoglio e nient'altro: percentuale di book sopra il floor, tasso di meeting mediano, percentuale di book a target. Sono gli stessi tre KPI in aggregato, quindi non serve una seconda vista.</p><p>Piu' una domanda sola, e una volta sola: le soglie reggono? Vanno riviste con i dati veri dopo 60 giorni, poi si lasciano stare.</p></div></div>
+  </div>
+  <div style="height:24px"></div>
+  <div class="note"><strong>Due campi umani, non dodici.</strong> Nel report del 25 agosto le quattro colonne di giudizio (stato relazione, ultimo check-in, rischio churn, prossima azione) sono rimaste vuote, ed e' il motivo principale per cui non e' entrato nella routine. Ne restano due, compilati in riunione e non prima: leva rotta e azione con data. Tutto il resto e' calcolato.</div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Prima di partire</div><h2>Quattro fix, in ordine</h2>
+    <p class="lede">Nessuno richiede un sistema nuovo. Stanno tutti dentro il Delivery OS e kpi-automation che esistono gia'.</p></div>
+  <ol class="fixes">
+    <li class="blk"><h3>Contare i meeting dalle categorie custom</h3><p>Sostituire <code>positive_reply_count</code> con il conteggio per <code>lead_category_id</code> via <code>/analytics/lead/category-wise-response</code>, risolvendo i nomi da <code>/leads/fetch-categories</code>. Senza questo, KPI 02 e KPI 03 misurano un numero che nessuno puo' difendere in una call con il cliente.</p></li>
+    <li><h3>Chiudere il buco di roster</h3><p>MT Proget e Growesia risultano live ma non compaiono nel tab TRIAGE: o e' un mismatch di client_id Smartlead, o e' un buco reale di tracciamento. Con 6 clienti su 18 fuori dal report, la percentuale di book a target non e' calcolabile.</p></li>
+    <li><h3>Aggiungere la riga "Meeting per 100 lead contattati"</h3><p>La riga inversa esiste gia' nel Delivery OS come "N Lead x Meeting". Va girata e resa leggibile: un tasso percentuale si confronta a colpo d'occhio fra clienti, un rapporto lead-per-meeting no.</p></li>
+    <li><h3>Fissare le soglie dopo 60 giorni</h3><p>1.500 lead e 1,2% sono un punto di partenza dichiarato, non un target validato. Si misura due mesi col conteggio corretto, poi si scrivono le soglie vere nel tab TARGET.</p></li>
+  </ol>
+</section>
+
+<footer>
+  <p><strong>Fonti.</strong> Tab TRIAGE del KPI Delivery OS, passata del 23/08/2026, 12 clienti su 18 matchati nel roster Smartlead: 52.765 invii a 30 giorni, 1.293 risposte, 3 rossi, 9 gialli, 0 verdi, 1 meeting ad agosto MTD e 13 a luglio. Floor 6.000 e regole bucket dal triage del 01/07/2026 (allora 34 clienti: 15 rossi, 14 gialli, 5 sani; mediana storica 5 appuntamenti al mese contro target 10). Tasso di meeting da Centro Paghe C7, 09/07/2026: 33 risposte su 513 invii pari al 6,4%, di cui 18 Not Interested e 5 Do Not Contact, e 4 meeting su 326 lead contattati.</p>
+  <p>Le soglie proposte sono derivate da questi dati, non validate su di essi. Vanno confermate dal team prima di diventare target. I clienti non tracciati non hanno numeri perche' non compaiono nel roster, non perche' siano a zero.</p>
+</footer>
+</div>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+const FLOOR=6000;
+const D=[
+ {n:"XIBER",invii:18158,reply:2.67,st:"w",stl:"Pacing",leva:"KPI 02 da misurare",own:"Campaign Manager",t:1},
+ {n:"Scotwork",invii:5660,reply:0.92,st:"w",stl:"Pacing",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"Hermes",invii:5145,reply:1.30,st:"w",stl:"Pacing",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"Rifiutoo",invii:5029,reply:2.68,st:"w",stl:"Pacing",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"Dotzero",invii:4947,reply:5.42,st:"w",stl:"Pacing",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"Centro Paghe",invii:4101,reply:2.76,st:"w",stl:"Pacing",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"Cappa Engineering",invii:3619,reply:2.82,st:"w",stl:"Pacing",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"EXECO",invii:3020,reply:1.19,st:"w",stl:"Pacing",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"Sigemili",invii:2646,reply:1.32,st:"w",stl:"Pacing",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"Dia Communication",invii:440,reply:0,st:"c",stl:"Volume",leva:"KPI 01 volume",own:"Campaign Ops",t:1},
+ {n:"Digital Tandem",invii:0,reply:null,st:"c",stl:"Fermo",leva:"KPI 01 nessun invio",own:"Campaign Ops",t:1},
+ {n:"Laycon",invii:0,reply:null,st:"c",stl:"Fermo",leva:"KPI 01 nessun invio",own:"Campaign Ops",t:1},
+ {n:"MT Proget",invii:null,reply:null,st:"n",stl:"Non tracciato",leva:"Roster: live ma assente",own:"Fix 02",t:0},
+ {n:"Growesia",invii:null,reply:null,st:"n",stl:"Non tracciato",leva:"Roster: live ma assente",own:"Fix 02",t:0},
+ {n:"GPM",invii:null,reply:null,st:"n",stl:"Non tracciato",leva:"Non ancora live",own:"Account Manager",t:0},
+ {n:"Assessfirst",invii:null,reply:null,st:"n",stl:"Non tracciato",leva:"Non ancora live",own:"Account Manager",t:0},
+ {n:"Moige APS",invii:null,reply:null,st:"n",stl:"Non tracciato",leva:"Non ancora live",own:"Account Manager",t:0},
+ {n:"SeaPride",invii:null,reply:null,st:"n",stl:"Non tracciato",leva:"Zero voci in memoria",own:"Account Manager",t:0}
+];
+const IT=n=>n.toLocaleString("it-IT");
+const pct1=n=>n.toLocaleString("it-IT",{minimumFractionDigits:1,maximumFractionDigits:1});
+D.forEach(d=>{
+  d.pct = d.invii===null?null:d.invii/FLOOR*100;
+  d.rep = (d.invii===null||d.reply===null)?null:Math.round(d.invii*d.reply/100);
+  d.ord = d.st==="c"?0:d.st==="w"?1:d.st==="g"?2:3;
+});
+const TR=D.filter(d=>d.t===1);
+
+/* ---- chart ---- */
+(function(){
+  const host=document.getElementById("chart");
+  const rows=TR.slice().sort((a,b)=>b.invii-a.invii);
+  const max=Math.max(...rows.map(r=>r.invii));
+  const fl=document.createElement("div"); fl.className="floor";
+  fl.style.setProperty("--ratio", String(FLOOR/max));
+  fl.innerHTML='<span class="floor-lab">floor 6.000</span>';
+  host.appendChild(fl);
+  rows.forEach(r=>{
+    const l=document.createElement("div"); l.className="bar-lab"; l.textContent=r.n; host.appendChild(l);
+    const t=document.createElement("div"); t.className="track"+(r.invii===0?" zero":"");
+    t.innerHTML='<i style="width:'+(r.invii/max*100)+'%"></i>';
+    t.tabIndex=0;
+    t.addEventListener("mousemove",e=>showTip(e,r));
+    t.addEventListener("mouseleave",hideTip);
+    t.addEventListener("focus",e=>showTip({clientX:t.getBoundingClientRect().left+40,clientY:t.getBoundingClientRect().top},r));
+    t.addEventListener("blur",hideTip);
+    host.appendChild(t);
+    const v=document.createElement("div"); v.className="bar-val"; v.textContent=IT(r.invii); host.appendChild(v);
+  });
+  const under=TR.filter(r=>r.invii<FLOOR).length;
+  document.getElementById("chartnote").textContent=
+    under+" clienti su "+TR.length+" restano sotto il floor. Il totale del gruppo e' "+IT(TR.reduce((s,r)=>s+r.invii,0))+
+    " invii in 30 giorni, cioe' una media di "+IT(Math.round(TR.reduce((s,r)=>s+r.invii,0)/TR.length))+" per cliente.";
+})();
+
+const tip=document.getElementById("tip");
+function showTip(e,r){
+  tip.innerHTML='<div class="t">'+r.n+'</div><dl>'+
+    '<dt>Invii 30gg</dt><dd>'+IT(r.invii)+'</dd>'+
+    '<dt>% del floor</dt><dd>'+pct1(r.pct)+'%</dd>'+
+    '<dt>Risposte</dt><dd>'+(r.rep===null?"—":IT(r.rep))+'</dd>'+
+    '<dt>Reply rate</dt><dd>'+(r.reply===null?"—":pct1(r.reply)+"%")+'</dd>'+
+    '<dt>Stato</dt><dd>'+r.stl+'</dd></dl>';
+  tip.style.opacity=1;
+  const w=tip.offsetWidth,h=tip.offsetHeight;
+  let x=e.clientX+16,y=e.clientY-h/2;
+  if(x+w>innerWidth-12)x=e.clientX-w-16;
+  y=Math.max(10,Math.min(y,innerHeight-h-10));
+  tip.style.left=x+"px"; tip.style.top=y+"px";
+}
+function hideTip(){tip.style.opacity=0}
+
+/* ---- table ---- */
+let filt="all", sortK="invii", sortD="desc";
+function rows(){
+  let r = filt==="untracked" ? D.filter(d=>d.t===0) : TR.slice();
+  if(filt==="under") r=r.filter(d=>d.invii<FLOOR);
+  if(filt==="stop")  r=r.filter(d=>d.invii===0);
+  if(filt==="ok")    r=r.filter(d=>d.invii>=FLOOR);
+  const dir=sortD==="asc"?1:-1;
+  return r.sort((a,b)=>{
+    let x=a[sortK],y=b[sortK];
+    if(x===null&&y===null)return 0; if(x===null)return 1; if(y===null)return -1;
+    if(typeof x==="string")return x.localeCompare(y,"it")*dir;
+    return (x-y)*dir;
+  });
+}
+function draw(){
+  const tb=document.getElementById("tbody"); const r=rows();
+  tb.innerHTML=r.map(d=>'<tr>'+
+    '<td class="name">'+d.n+'</td>'+
+    '<td class="num">'+(d.invii===null?"—":IT(d.invii))+'</td>'+
+    '<td class="num">'+(d.pct===null?"—":pct1(d.pct)+"%")+'</td>'+
+    '<td class="num">'+(d.rep===null?"—":IT(d.rep))+'</td>'+
+    '<td class="num">'+(d.reply===null?"—":pct1(d.reply)+"%")+'</td>'+
+    '<td><span class="st '+d.st+'"><i></i>'+d.stl+'</span></td>'+
+    '<td style="white-space:normal">'+d.leva+'</td>'+
+    '<td>'+d.own+'</td></tr>').join("");
+  document.getElementById("tnote").textContent =
+    filt==="untracked"
+      ? "6 clienti su 18 non compaiono nel tab TRIAGE. Per GPM, Assessfirst, Moige e SeaPride e' coerente, non sono ancora live. MT Proget e Growesia invece risultano live in memoria di sessione: e' il buco che il fix 02 deve chiudere."
+      : r.length+" clienti mostrati. Il reply rate e' diagnostica, non resa: su Centro Paghe C7 un 6,4% conteneva 18 Not Interested e 5 Do Not Contact, con 4 soli meeting su 326 lead contattati.";
+  document.querySelectorAll("th.s").forEach(th=>{
+    th.dataset.dir = th.dataset.k===sortK ? sortD : "";
+  });
+}
+document.querySelectorAll("th.s").forEach(th=>{
+  th.addEventListener("click",()=>{
+    const k=th.dataset.k;
+    if(k===sortK){sortD = sortD==="asc"?"desc":"asc";}
+    else{sortK=k; sortD = k==="n"?"asc":"desc";}
+    draw();
+  });
+});
+document.getElementById("filters").addEventListener("click",e=>{
+  const b=e.target.closest("button.chip"); if(!b)return;
+  filt=b.dataset.f;
+  document.querySelectorAll("#filters .chip").forEach(c=>c.setAttribute("aria-pressed",String(c===b)));
+  draw();
+});
+draw();
+</script>
