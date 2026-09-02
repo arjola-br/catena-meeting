@@ -415,11 +415,24 @@ function detail(cid){
     +(c.rt?ib("Reazione mediana",c.rt.med.toLocaleString("it-IT",{minimumFractionDigits:1,maximumFractionDigits:1})+" h",
         c.rt.h1+"% entro 1h · "+c.rt.h4+"% entro 4h · "+c.rt.n+" risposte", c.rt.h1>=50?"ok":c.rt.h1>=30?"wm":"bad")
        :ib("Reazione mediana","—","nessuna risposta lavorata nel periodo"))
-    +(c.inf?ib("Costo infrastruttura",EUR(cost(c)),(c.inf.prem||0)+" premium · "+(c.inf.bulk||0)+" bulk · "+(c.inf.dom||0)+" domini"):"")
-    +(c.inf?ib("Costo per meeting",EUR(cpm(c)),x.m?N(x.m)+" meeting nel periodo":"nessun meeting",cpm(c)==null?"bad":cpm(c)>500?"bad":cpm(c)>200?"wm":"ok"):"")
     +(c.since?ib("Cliente dal",c.since.split("-").reverse().join("/"),"prima campagna creata"):"")
     +ib("Aperture uniche",c.trk?N(x.uo):"non tracciate",c.trk?c.trk+" campagne su "+c.camp+" con tracking":"tracking disattivato")
     +"</div>";
+  let fin="";
+  if(c.inf){
+    const i=c.inf, cp=(i.prem||0)*(+CO.prem||0), cb=(i.bulk||0)*(+CO.bulk||0), cd=(i.dom||0)*(+CO.dom||0)/12, cs=(+CO.sl||0);
+    const tot=cp+cb+cd+cs;
+    fin='<div class="dh">Finanza</div><div class="dsec">'
+      +ib("Caselle premium",EUR(cp),(i.prem||0)+" × € "+(+CO.prem||0).toLocaleString("it-IT")+"/mese")
+      +ib("Caselle bulk",EUR(cb),(i.bulk||0)+" × € "+(+CO.bulk||0).toLocaleString("it-IT")+"/mese")
+      +ib("Domini",EUR(cd),(i.dom||0)+" × € "+(+CO.dom||0).toLocaleString("it-IT")+"/anno")
+      +(cs?ib("Quota Smartlead",EUR(cs),"per cliente"):"")
+      +ib("Totale mese",EUR(tot),"spesa infrastruttura")
+      +ib("Costo per meeting",EUR(cpm(c)),x.m?N(x.m)+" meeting nel periodo":"nessun meeting",cpm(c)==null?"bad":cpm(c)>500?"bad":cpm(c)>200?"wm":"ok")
+      +ib("Costo per lead contattato",x.l?("€ "+(tot/x.l).toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2})):"—",N(x.l)+" lead nel periodo")
+      +ib("Costo per risposta",x.r?EUR(tot/x.r):"—",N(x.r)+" risposte nel periodo")
+      +"</div>";
+  } else fin='<div class="dh">Finanza</div><div class="dsec">'+ib("Finanza","—","nessuna infrastruttura collegata a questo cliente")+"</div>";
   const wk=c.wk||[], mx=Math.max(...wk,1);
   if(wk.some(v=>v>0)) per+='<div class="dh">Invii, ultime 12 settimane</div><div class="spark">'
     +wk.map((v,i)=>`<i style="height:${Math.max(v/mx*100,2)}%" title="sett. al ${D.weeks[i]}: ${N(v)}"></i>`).join("")+"</div>";
@@ -431,7 +444,7 @@ function detail(cid){
       <td>${N(x.l)}</td><td>${N(x.r)}</td><td>${N(x.pm)}</td><td>${N(x.ng)}</td><td>${N(x.m)}</td><td>${P(x.ri)}</td>
       <td>${P(x.bo)}</td><td>${N(x.lm)}</td></tr>`).join("")
       :'<tr><td colspan="10" style="text-align:left">Nessuna campagna.</td></tr>')+"</tbody></table>";
-  return '<div class="detail">'+inf+per+tab+"</div>";
+  return '<div class="detail">'+inf+per+fin+tab+"</div>";
 }
 /* ---------- campaign table ---------- */
 function kfilter(){
