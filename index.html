@@ -121,6 +121,7 @@ table.mini{width:100%;font-size:12px;border-collapse:separate;border-spacing:0}
 table.mini th{position:static;background:transparent;border-bottom:1px solid var(--line2);cursor:default;padding:6px 9px}
 table.mini td{padding:6px 9px;background:transparent!important}
 table.mini td:first-child{position:static;background:transparent!important}
+td.out{color:var(--ink);font-weight:600}
 input.tg{width:62px;background:var(--surface);border:1px solid var(--line2);border-radius:5px;padding:3px 6px;color:var(--ink);
  font-family:"IBM Plex Mono",monospace;font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -167,8 +168,9 @@ input.tg{width:62px;background:var(--surface);border:1px solid var(--line2);bord
 <div class="tw"><table id="ct"><thead><tr>
 <th data-k="n">Cliente</th><th data-k="s">Email Inviate</th><th data-k="l">Lead Contattati</th>
 <th data-k="r">Risposte Totali</th><th data-k="pa">Pos. Auto (AI)</th><th data-k="pm">Pos. Manuali</th>
-<th data-k="m">Meeting Prenotati</th><th data-k="ri">% Risp/Invii</th><th data-k="pr">% Pos/Risp</th>
-<th data-k="bo">% Bounce</th><th data-k="lm">N&deg; Lead &times; Meeting</th><th data-k="tg">Target</th><th data-k="pt">% Target</th><th data-k="ord">Stato</th>
+<th data-k="ri">% Risp/Invii</th><th data-k="pr">% Pos/Risp</th>
+<th data-k="bo">% Bounce</th><th data-k="lm">N&deg; Lead &times; Meeting</th><th data-k="tg">Target</th>
+<th data-k="m">Meeting Prenotati</th><th data-k="pt">% Target</th><th data-k="ord">Stato</th>
 </tr></thead><tbody id="cb"></tbody></table></div>
 <p class="note" id="cnote"></p>
 
@@ -277,8 +279,9 @@ function ctable(){
   tb.innerHTML=a.map(c=>{const x=M(c[W]),s=stat(c[W]);
     return `<tr class="crow" data-cid="${c.id}"><td>${c.n} <span class="tag">${c.act}/${c.camp}</span></td>
     <td>${N(x.s)}</td><td>${N(x.l)}</td><td>${N(x.r)}</td><td>${N(x.pa)}</td><td>${N(x.pm)}</td>
-    <td>${N(x.m)}</td><td>${P(x.ri)}</td><td>${P(x.pr,1)}</td><td>${P(x.bo)}</td><td>${N(x.lm)}</td>
+    <td>${P(x.ri)}</td><td>${P(x.pr,1)}</td><td>${P(x.bo)}</td><td>${N(x.lm)}</td>
     <td><input class="tg" type="number" min="0" step="1" value="${tget(c.id)}" data-tg="${c.id}"></td>
+    <td class="out">${N(x.m)}</td>
     <td>${W==="d"?P(tget(c.id)?x.m/tget(c.id)*100:null,0):"—"}</td>
     <td><span class="pill ${s.c}"><i></i>${s.t}</span></td></tr>`;}).join("")
     || '<tr><td colspan="14" style="text-align:left;color:var(--mut)">Nessun cliente con questi filtri.</td></tr>';
